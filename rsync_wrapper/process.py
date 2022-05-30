@@ -10,7 +10,6 @@ def popen(command: str) -> types.BasicOutputIterator:
         command,
         shell=True,
         text=True,
-        bufsize=0,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )

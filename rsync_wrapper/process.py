@@ -11,7 +11,6 @@ def popen(command: str) -> types.BasicOutputIterator:
         shell=True,
         text=True,
         bufsize=0,
-        universal_newlines=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )

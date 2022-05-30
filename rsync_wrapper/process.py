@@ -33,7 +33,7 @@ def popen(command: str) -> types.BasicOutputIterator:
     selector.register(stdout, selectors.EVENT_READ, (types.StdOut, read))
     selector.register(stderr, selectors.EVENT_READ, (types.StdErr, read))
 
-    while not stdout.closed and not stderr.closed:
+    while not stdout.closed or not stderr.closed:
         for key, _ in selector.select():
             output_type, callback = key.data
             if data := callback(key.fileobj):

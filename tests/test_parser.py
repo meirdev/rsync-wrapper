@@ -13,9 +13,7 @@ def test_remain():
 def test_progress_bar():
     assert parser.ProgressBar.parse(
         "32768   0%    0.00kB/s    0:00:00"
-    ) == types.ProgressBar(
-        "32768", 0, 0.0, "kB/s", datetime.timedelta()
-    )
+    ) == types.ProgressBar("32768", 0, 0.0, "kB/s", datetime.timedelta())
 
     assert parser.ProgressBar.parse(
         "310345728  31%  295.94MB/s    0:00:02"

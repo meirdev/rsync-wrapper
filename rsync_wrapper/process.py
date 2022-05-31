@@ -1,6 +1,6 @@
 import selectors
 import subprocess
-from typing import AnyStr, IO
+from typing import IO
 
 from . import types
 
@@ -21,7 +21,7 @@ def popen(command: str) -> types.BasicOutputIterator:
 
     selector = selectors.DefaultSelector()
 
-    def read(fp: IO[AnyStr]) -> str | None:
+    def read(fp: IO[str]) -> str | None:
         if output := fp.readline():
             return output
 
@@ -30,13 +30,19 @@ def popen(command: str) -> types.BasicOutputIterator:
 
         return None
 
-    selector.register(stdout, selectors.EVENT_READ, (types.StdOut, read))
-    selector.register(stderr, selectors.EVENT_READ, (types.StdErr, read))
+    selector.register(stdout, selectors.EVENT_READ)
+    selector.register(stderr, selectors.EVENT_READ)
+
+    output_type = {
+        stdout: types.StdOut,
+        stderr: types.StdErr,
+    }
 
     while not stdout.closed or not stderr.closed:
         for key, _ in selector.select():
-            output_type, callback = key.data
-            if data := callback(key.fileobj):
-                yield output_type(data)
+            fileobj: IO[str] = key.fileobj  # type: ignore
+
+            if data := read(fileobj):
+                yield output_type[fileobj](data)
 
     yield types.ExitCode(process.wait())
